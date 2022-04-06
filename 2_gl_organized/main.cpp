@@ -4,6 +4,9 @@
 #include <cmath>
 #include "Shader.h"
 #include "Vao.h"
+#include "Ebo.h"
+#include "Vbo.h"
+
 
 static const int WIDTH {1200};
 static const int HEIGHT {1200};
@@ -31,20 +34,15 @@ int main(){
     // and using the Core profile, meaning using only the modern functions
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLfloat vertices[] = {
-        0.f, -0.25f*float(std::sqrt(3)), 0.0f,
-        1.f, -0.25f*float(std::sqrt(3)), 0.0f,
-        0.5f, 0.25f*float(std::sqrt(3)), 0.0f
-    };
-
     // another set of vertices, to use with Index Buffer Object
-    GLfloat vertices2[] = {
-        -1.0f, -0.25f*float(std::sqrt(3)), 0.0f, //bottom left 0
-        0.f, -0.25f*float(std::sqrt(3)), 0.0f, // bottom right 1
-        -0.5f, 0.25f*float(std::sqrt(3)), 0.0f, // top 2
-        -.5f, -0.25f*float(std::sqrt(3)), 0.0f, // inner middle 3
-        -0.75f, 0, 0.0f, // inner left 4
-        -0.25f, 0, 0.0f // inner right 5
+    GLfloat vertices[] = {
+                // Position                    ,         Color
+        -1.0f, -0.25f*float(std::sqrt(3)), 0.0f,  0.5f, 0.7f, 0.6f,   //bottom left 0
+         0.f,  -0.25f*float(std::sqrt(3)), 0.0f,  0.2f, 0.4f, 0.26f,  // bottom right 1
+        -0.5f,  0.25f*float(std::sqrt(3)), 0.0f,  0.4f, 0.4f, 0.7f,   // top 2
+        -0.5f, -0.25f*float(std::sqrt(3)), 0.0f,  0.8f, 0.6f, 0.0f,   // inner middle 3
+        -0.75f,  0.0f,                     0.0f,  0.1f, 0.32f, 0.2f,  // inner left 4
+        -0.25f,  0.0f,                     0.0f,  0.5f, 0.02f, 0.77f, // inner right 5
     };
 
     GLuint indices[] = {
@@ -68,10 +66,21 @@ int main(){
 
     glViewport(0, 0, WIDTH, HEIGHT);
 
-    Shader shaderProgram("shaders/default.vert", "shaders/default.frag");
-    Vao vao(vertices, sizeof(vertices));
+    Shader shaderProgram("/home/user/fx/openGL/2_gl_organized/shaders/default.vert",
+                         "/home/user/fx/openGL/2_gl_organized/shaders/default.frag");
 
-    Vao vao2(vertices2, sizeof(vertices2), indices, sizeof(indices));
+    Vao vao;
+    Vbo vbo(vertices, sizeof(vertices));
+    Ebo ebo(indices, sizeof(indices));
+    vao.bind();
+    vbo.bind();
+    ebo.bind();
+    vao.linkVboAttrib(vbo, 0, 3, GL_FLOAT, 6*sizeof(GL_FLOAT), (void*)0);
+    vao.linkVboAttrib(vbo, 1, 3, GL_FLOAT, 6*sizeof(GL_FLOAT), (void*)(3*sizeof(GL_FLOAT)));
+    vao.unbind();
+    vbo.unbind();
+    ebo.unbind();
+
     // Specify the color of the background
     glClearColor(0.07f, 0.3f, 0.6f, 1.0f);
     // Clean the back buffer and assign the new color to it
@@ -79,19 +88,23 @@ int main(){
     // Swap back and front buffers
     glfwSwapBuffers(window);
 
+    // Get location of uniforms:
+    GLuint scaleLoc = glGetUniformLocation(shaderProgram.id(), "scale");
+    GLuint tranformLoc = glGetUniformLocation(shaderProgram.id(), "transform");
+    float transform[] = {-.6f, .2f, 0.0f};
+
     // Main loop
     while(!glfwWindowShouldClose(window)){
         glClearColor(0.07f, 0.3f, 0.6f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         // Finally to draw, we set the program object that we want to use
         shaderProgram.use();
-        vao.use();
-        // and tell openGL which type of primative we want to draw and how many of it
-        // is in our data
-        glDrawArrays(GL_TRIANGLES, 0, 3);
 
-        vao2.use();
+        vao.bind();
+        glUniform1f(scaleLoc, 1.6f);
+        glUniform3fv(tranformLoc, 3, transform);
         glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+        vao.unbind();
         glfwSwapBuffers(window);
         // Take care of all GLFW events
         glfwPollEvents();

@@ -86,6 +86,12 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/user/fx/openGL/2_gl_organized/Ebo.cpp">
+			<Option target="openGL_Tutorial_0"/>
+		</Unit>
+		<Unit filename="/home/user/fx/openGL/2_gl_organized/Ebo.h">
+			<Option target="openGL_Tutorial_0"/>
+		</Unit>
 		<Unit filename="/home/user/fx/openGL/2_gl_organized/Shader.cpp">
 			<Option target="openGL_Tutorial_0"/>
 		</Unit>
@@ -96,6 +102,12 @@
 			<Option target="openGL_Tutorial_0"/>
 		</Unit>
 		<Unit filename="/home/user/fx/openGL/2_gl_organized/Vao.h">
+			<Option target="openGL_Tutorial_0"/>
+		</Unit>
+		<Unit filename="/home/user/fx/openGL/2_gl_organized/Vbo.cpp">
+			<Option target="openGL_Tutorial_0"/>
+		</Unit>
+		<Unit filename="/home/user/fx/openGL/2_gl_organized/Vbo.h">
 			<Option target="openGL_Tutorial_0"/>
 		</Unit>
 		<Unit filename="/home/user/fx/openGL/2_gl_organized/glad.c">

@@ -12,10 +12,12 @@ public:
     GLuint id() { return m_shaderProgram; }
 
     void use(){glUseProgram(m_shaderProgram);}
-//    GLuint id;
 
 private:
     std::string readShaderFile(const std::filesystem::__cxx11::path &path);
+
+    // Checks if the different Shaders have compiled properly
+    void compileErrors(unsigned int shader, const char* type);
 
 private:
     std::string m_vertexFile{};

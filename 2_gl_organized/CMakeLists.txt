@@ -14,11 +14,19 @@ set(SRCs
     glad.c
     Shader.cpp
     Vao.cpp
+    Vbo.cpp
+    Ebo.cpp
 )
 
 set(HDRs
 
 )
+
+set(SHADERS
+  shaders/default.vert
+  shaders/default.frag
+)
+
 
 set(3rdparty_INCLUDE_DIR "/home/user/fx/localLibs/include")
 include_directories(${3rdparty_INCLUDE_DIR})
@@ -27,6 +35,10 @@ add_executable(${PROJECT_NAME}
     ${SRCs} ${HDRs}
     )
 
+set_target_properties(${PROJECT_NAME} PROPERTIES
+#  MACOSX_BUNDLE TRUE
+#  MACOSX_FRAMEWORK_IDENTIFIER org.cmake.ExecutableTarget
+  RESOURCE "${SHADERS}")
 target_link_libraries(${PROJECT_NAME}
                         OpenGL::GL
                         glfw

@@ -81,6 +81,22 @@ build CMakeFiles/openGL_Tutorial_0.dir/Vao.cpp.o: CXX_COMPILER__openGL_Tutorial_
   OBJECT_DIR = CMakeFiles/openGL_Tutorial_0.dir
   OBJECT_FILE_DIR = CMakeFiles/openGL_Tutorial_0.dir
 
+build CMakeFiles/openGL_Tutorial_0.dir/Vbo.cpp.o: CXX_COMPILER__openGL_Tutorial_0_Debug /home/user/fx/openGL/2_gl_organized/Vbo.cpp || cmake_object_order_depends_target_openGL_Tutorial_0
+  DEFINES = -DGLFW_DLL
+  DEP_FILE = CMakeFiles/openGL_Tutorial_0.dir/Vbo.cpp.o.d
+  FLAGS = -g -std=gnu++2a
+  INCLUDES = -I/home/user/fx/localLibs/include
+  OBJECT_DIR = CMakeFiles/openGL_Tutorial_0.dir
+  OBJECT_FILE_DIR = CMakeFiles/openGL_Tutorial_0.dir
+
+build CMakeFiles/openGL_Tutorial_0.dir/Ebo.cpp.o: CXX_COMPILER__openGL_Tutorial_0_Debug /home/user/fx/openGL/2_gl_organized/Ebo.cpp || cmake_object_order_depends_target_openGL_Tutorial_0
+  DEFINES = -DGLFW_DLL
+  DEP_FILE = CMakeFiles/openGL_Tutorial_0.dir/Ebo.cpp.o.d
+  FLAGS = -g -std=gnu++2a
+  INCLUDES = -I/home/user/fx/localLibs/include
+  OBJECT_DIR = CMakeFiles/openGL_Tutorial_0.dir
+  OBJECT_FILE_DIR = CMakeFiles/openGL_Tutorial_0.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target openGL_Tutorial_0
@@ -89,7 +105,7 @@ build CMakeFiles/openGL_Tutorial_0.dir/Vao.cpp.o: CXX_COMPILER__openGL_Tutorial_
 #############################################
 # Link the executable openGL_Tutorial_0
 
-build openGL_Tutorial_0: CXX_EXECUTABLE_LINKER__openGL_Tutorial_0_Debug CMakeFiles/openGL_Tutorial_0.dir/main.cpp.o CMakeFiles/openGL_Tutorial_0.dir/glad.c.o CMakeFiles/openGL_Tutorial_0.dir/Shader.cpp.o CMakeFiles/openGL_Tutorial_0.dir/Vao.cpp.o | /usr/lib/x86_64-linux-gnu/libGL.so /usr/lib/x86_64-linux-gnu/libglfw.so.3.2
+build openGL_Tutorial_0: CXX_EXECUTABLE_LINKER__openGL_Tutorial_0_Debug CMakeFiles/openGL_Tutorial_0.dir/main.cpp.o CMakeFiles/openGL_Tutorial_0.dir/glad.c.o CMakeFiles/openGL_Tutorial_0.dir/Shader.cpp.o CMakeFiles/openGL_Tutorial_0.dir/Vao.cpp.o CMakeFiles/openGL_Tutorial_0.dir/Vbo.cpp.o CMakeFiles/openGL_Tutorial_0.dir/Ebo.cpp.o | /usr/lib/x86_64-linux-gnu/libGL.so /usr/lib/x86_64-linux-gnu/libglfw.so.3.2
   FLAGS = -g
   LINK_LIBRARIES = /usr/lib/x86_64-linux-gnu/libGL.so  /usr/lib/x86_64-linux-gnu/libglfw.so.3.2  -ldl  -lstdc++fs
   OBJECT_DIR = CMakeFiles/openGL_Tutorial_0.dir
