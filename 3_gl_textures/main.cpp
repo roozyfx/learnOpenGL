@@ -1,14 +1,14 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <iostream>
-#include <cmath>
 #include "Shader.h"
 #include "Vao.h"
 #include "Ebo.h"
 #include "Vbo.h"
 
-#include <ctime>
-#include <limits>
+#include <iostream>
+#include <cmath>
+#include <stb/stb_image.h>
+
 
 static const int WIDTH {1200};
 static const int HEIGHT {1200};
@@ -38,19 +38,16 @@ int main(){
 
     // another set of vertices, to use with Index Buffer Object
     GLfloat vertices[] = {
-                // Position                    ,         Color
-        -1.0f, -0.25f*float(std::sqrt(3)), 0.0f,  0.5f, 0.7f, 0.6f,   //bottom left 0
-         0.f,  -0.25f*float(std::sqrt(3)), 0.0f,  0.2f, 0.4f, 0.26f,  // bottom right 1
-        -0.5f,  0.25f*float(std::sqrt(3)), 0.0f,  0.4f, 0.4f, 0.7f,   // top 2
-        -0.5f, -0.25f*float(std::sqrt(3)), 0.0f,  0.8f, 0.6f, 0.0f,   // inner middle 3
-        -0.75f,  0.0f,                     0.0f,  0.1f, 0.32f, 0.2f,  // inner left 4
-        -0.25f,  0.0f,                     0.0f,  0.5f, 0.02f, 0.77f, // inner right 5
+           // Position    ,         Color
+        -0.8f, -0.8f, 0.0f,  0.9f, 0.1f, 0.1f,  0.0f, 0.0f, // bottom left 0
+         0.8f, -0.8f, 0.0f,  0.2f, 0.4f, 0.26f, 1.0f, 0.0f, // bottom right 1
+         0.8f,  0.8f, 0.0f,  0.1f, 0.7f, 0.2f,  1.0f, 1.0f, // top right 2
+        -0.8f,  0.8f, 0.0f,  0.8f, 0.6f, 0.0f,  0.0f, 1.0f // top left 3
     };
 
     GLuint indices[] = {
-        0, 3, 4,
-        3, 1, 5,
-        4, 5, 2
+        0, 1, 2,
+        0, 2, 3
     };
     // Create the window
     GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "FxGl", nullptr, nullptr);
@@ -68,8 +65,16 @@ int main(){
 
     glViewport(0, 0, WIDTH, HEIGHT);
 
-    Shader shaderProgram("/home/user/fx/openGL/2_gl_organized/shaders/default.vert",
-                         "/home/user/fx/openGL/2_gl_organized/shaders/default.frag");
+    // load an image for the texture
+    int textureWidth, textureHeight, textureChannels;
+    // STB reads images from top-left to botttom-right, whereas opengl reads from bottom-left to top-right.
+    // so the image read by stb is flipped in opengl. Correct it with this:
+    stbi_set_flip_vertically_on_load(true);
+    // and read the image
+    unsigned char* textureImage = stbi_load("../res/wood0.png", &textureWidth, &textureHeight, &textureChannels, 0);
+
+    Shader shaderProgram("../shaders/default.vert",
+                         "../shaders/default.frag");
 
     Vao vao;
     Vbo vbo(vertices, sizeof(vertices));
@@ -77,8 +82,9 @@ int main(){
     vao.bind();
     vbo.bind();
     ebo.bind();
-    vao.linkVboAttrib(vbo, 0, 3, GL_FLOAT, 6*sizeof(GL_FLOAT), (void*)0);
-    vao.linkVboAttrib(vbo, 1, 3, GL_FLOAT, 6*sizeof(GL_FLOAT), (void*)(3*sizeof(GL_FLOAT)));
+    vao.linkVboAttrib(vbo, 0, 3, GL_FLOAT, 8*sizeof(GL_FLOAT), (void*)0);
+    vao.linkVboAttrib(vbo, 1, 3, GL_FLOAT, 8*sizeof(GL_FLOAT), (void*)(3*sizeof(GL_FLOAT)));
+    vao.linkVboAttrib(vbo, 2, 2, GL_FLOAT, 8*sizeof(GL_FLOAT), (void*)(6*sizeof(GL_FLOAT)));
     vao.unbind();
     vbo.unbind();
     ebo.unbind();
@@ -93,7 +99,32 @@ int main(){
     // Get location of uniforms:
     GLuint scaleLoc = glGetUniformLocation(shaderProgram.id(), "scale");
     GLuint tranformLoc = glGetUniformLocation(shaderProgram.id(), "transform");
-    const GLfloat transform[] = {0.6f, .4f, 0.0f};
+    const GLfloat transform[] = {0.0f, .0f, 0.0f};
+    GLuint textureLoc = glGetUniformLocation(shaderProgram.id(), "tex0");
+    shaderProgram.use();
+    glUniform1i(textureLoc, 0);
+
+    // create reference and generate texture
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    // modeify the parameters of the texture
+    glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, textureImage);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    // free the image
+    stbi_image_free(textureImage);
+
+    // unbind the texture to prevent mistakes
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     // Main loop
     while(!glfwWindowShouldClose(window)){
@@ -103,15 +134,18 @@ int main(){
         shaderProgram.use();
 
         vao.bind();
-        glUniform1f(scaleLoc, 1.6f);
+        glUniform1f(scaleLoc, 1.0f);
         glUniform3fv(tranformLoc, 1, &transform[0]);
-        glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         vao.unbind();
         glfwSwapBuffers(window);
         // Take care of all GLFW events
         glfwPollEvents();
     }
 
+    // delete the texture to clean up
+    glDeleteTextures(1, &texture);
     // Delete the window before ending the program
     glfwDestroyWindow(window);
     // Terminate GLFW

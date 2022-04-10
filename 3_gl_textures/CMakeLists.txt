@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(openGL_Tutorial_2)
+project(openGL_Tutorial_3)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -16,6 +16,7 @@ set(SRCs
     Vao.cpp
     Vbo.cpp
     Ebo.cpp
+    stbimage.cpp
 )
 
 set(HDRs

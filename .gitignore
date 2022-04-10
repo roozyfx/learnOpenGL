@@ -1,5 +1,7 @@
 # build Directory
-build/
+*build/
+*Debug/
+*Release/
 CMakeLists.txt.user
 
 # Prerequisites

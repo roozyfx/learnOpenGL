@@ -1,3 +1,0 @@
-/home/user/fx/openGL/2_gl_organized/Debug/CMakeFiles/openGL_Tutorial_0.dir
-/home/user/fx/openGL/2_gl_organized/Debug/CMakeFiles/edit_cache.dir
-/home/user/fx/openGL/2_gl_organized/Debug/CMakeFiles/rebuild_cache.dir
