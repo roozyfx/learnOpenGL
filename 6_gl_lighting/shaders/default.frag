@@ -24,14 +24,13 @@ void main()
     float ambient = 0.2;
 
     vec3 viewDir = normalize(currentPos - cameraPos);
-    vec3 reflect = reflect(-viewDir, n);
+    vec3 reflectDir = reflect(-viewDir, n);
     float specularFact = 0.6;
 
-    float specular = specularFact * pow(max(dot(reflect, viewDir), 0), 8);
+    float specular = specularFact * pow(max(dot(reflectDir, viewDir), 0), 8);
 
 
     vec4 light = vec4(lightColor * (ambient + diffuse + specular), 1.0);
 
     fragColor = texture(tex0, texCoord) * light;
-//    fragColor = fColor * light;
 }

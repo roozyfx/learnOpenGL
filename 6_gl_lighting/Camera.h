@@ -20,7 +20,7 @@ public:
         );
     ~Camera();
 
-    glm::mat4 mvpMatrix();
+    glm::mat4 viewProjectionMat();
 
     glm::vec3 getPosition(){return m_position;}
 

@@ -26,7 +26,7 @@ Camera::~Camera()
 {
 }
 
-glm::mat4 Camera::mvpMatrix()
+glm::mat4 Camera::viewProjectionMat()
 {
     m_view = glm::lookAt(m_position, m_position + m_dir, m_up);
     m_proj = glm::perspective(glm::radians(m_fov), static_cast<float>(m_winWidth)/m_winHeight, m_near, m_far);
@@ -47,22 +47,6 @@ void Camera::handleInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
         m_position -= m_fSpeed * glm::normalize(glm::cross(m_dir, m_up));
     }
-//    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-//        m_fRotateX += 0.5f;
-//        rotate(m_fRotateX, glm::vec3(0.f, 1.0f, 0.0f));
-//    }
-//    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-//        m_fRotateX -= 0.5f;
-//        rotate(m_fRotateX, glm::vec3(0.f, 1.0f, 0.0f));
-//    }
-//    if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-//        m_fRotateY += 0.5f;
-//        rotate(m_fRotateY, glm::vec3(1.f, 0.0f, 0.0f));
-//    }
-//    if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-//        m_fRotateY -= 0.5f;
-//        rotate(m_fRotateY, glm::vec3(1.f, 0.0f, 0.0f));
-//    }
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, 1);
@@ -111,13 +95,13 @@ void Camera::handleInput(GLFWwindow *window)
         float rotY {mouseSensitivity * static_cast<float>(mouseX - (m_winWidth / 2)) / m_winWidth};
 
         // Calculates upcoming vertical change in the Orientation
-        glm::vec3 newDir = glm::rotate(m_dir, glm::radians(-rotX), glm::normalize(glm::cross(m_dir, m_up)));
+        glm::vec3 newDir = glm::rotate(m_dir, glm::radians(rotX), glm::normalize(glm::cross(m_dir, m_up)));
         // Decides whether or not the next vertical Orientation is legal or not
         if (std::abs(glm::angle(newDir, m_up) - glm::radians(90.0f)) <= glm::radians(85.0f))
         {
             m_dir = newDir;
         }
-        m_dir = glm::rotate(m_dir, glm::radians(-rotY), m_up);
+        m_dir = glm::rotate(m_dir, glm::radians(rotY), m_up);
 
         // Sets mouse cursor to the middle of the screen so that it doesn't end up roaming around
         glfwSetCursorPos(window, (m_winHeight / 2), (m_winHeight / 2));
@@ -132,7 +116,7 @@ void Camera::handleInput(GLFWwindow *window)
 
 void Camera::handleMouseScroll(double xoffset, double yoffset)
 {
-    m_position.z += yoffset * m_mouseSensitivity;
+    m_position.z += yoffset * m_mouseSensitivity * 10;
     if (m_position.z < m_near)
         m_position.z = m_near;
     if ( m_position.z > m_far)
